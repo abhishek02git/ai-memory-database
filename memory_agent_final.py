@@ -42,7 +42,7 @@ class MemoryStorage:
         )
         self.bucket = self.cluster.bucket(bucket_name)
         self.scope = self.bucket.scope(scope_name)
-        self.abhishek_collection = self.scope.collection("abhi")
+        self.user_collection = self.scope.collection("abhi")
         self.shared_collection = self.scope.collection("shared")
         print("[Memory System] Connected to Couchbase Capella with scope 'agent'")
 
@@ -112,7 +112,7 @@ class MemoryStorage:
             "time_created": current_datetime.strftime("%I:%M %p")
         }
         
-        self.abhishek_collection.upsert(doc_id, memory_doc)
+        self.user_collection.upsert(doc_id, memory_doc)
         print(f"[Memory System] Saved personal memory to abhi collection: '{memory_data}'")
         return True
 
@@ -414,7 +414,7 @@ Proactively identify conflicts or synergies. If a request conflicts with existin
 
 Information Classification Policy
 
-Shared Memory: Any information relevant to team projects, schedules, availability (leave, out-of-office), client meetings, project deadlines, documented decisions, and general team announcements. The goal is to ensure team alignment and transparency. Note: Shared memories automatically include the user's name for clarity (e.g., "Abhishek will be on leave tomorrow").
+Shared Memory: Any information relevant to team projects, schedules, availability (leave, out-of-office), client meetings, project deadlines, documented decisions, and general team announcements. The goal is to ensure team alignment and transparency. Note: Shared memories automatically include the user's name for clarity (e.g., "{USER_NAME} will be on leave tomorrow").
 
 Personal Memory: Information exclusive to an individual that does not directly impact team collaboration. This includes personal appointments, non-work-related reminders, or private notes. This data will not be exposed to other team members.
 
@@ -458,19 +458,19 @@ Is this correct?"
 
 Example 2: Proactive Conflict Resolution
 
-User Input: "Hey, can you book a project kickoff meeting for this Friday afternoon with me, Abhishek, and Ben?"
+User Input: "Hey, can you book a project kickoff meeting for this Friday afternoon with me, {USER_NAME}, and Ben?"
 
 Agent's Thought Process:
 
 Retrieve Context: Call retrieve_all_context_memories.
 
-Analyze Context: The retrieved shared memories include a fact: "memory": "Abhishek will be on leave this Friday.", "author": "Abhishek".
+Analyze Context: The retrieved shared memories include a fact: "memory": "{USER_NAME} will be on leave this Friday.", "author": "{USER_NAME}".
 
-Identify Conflict: The user's request to book a meeting with Abhishek on Friday conflicts with her stored availability.
+Identify Conflict: The user's request to book a meeting with {USER_NAME} on Friday conflicts with her stored availability.
 
 Formulate Response: State the conflict clearly and professionally. Proactively suggest an alternative solution.
 
-Agent's Final Response: "Based on the shared team calendar, Abhishek is on leave this Friday. Therefore, I cannot schedule the kickoff then. Would you like me to check for available slots for the three of you next Monday?"
+Agent's Final Response: "Based on the shared team calendar, {USER_NAME} is on leave this Friday. Therefore, I cannot schedule the kickoff then. Would you like me to check for available slots for the three of you next Monday?"
 
 Example 3: Simple Information Retrieval
 
@@ -480,7 +480,7 @@ Agent's Thought Process:
 
 Retrieve Context: Call retrieve_all_context_memories.
 
-Analyze Context: Search the retrieved memories for keywords like "Project Alpha," "decisions," and "yesterday." Find a relevant shared memory: -"memory": "Decision from Project Alpha sync: The deadline for Q3 deliverables is extended by one week.", "author": "Abhishek"-.
+Analyze Context: Search the retrieved memories for keywords like "Project Alpha," "decisions," and "yesterday." Find a relevant shared memory: -"memory": "Decision from Project Alpha sync: The deadline for Q3 deliverables is extended by one week.", "author": "{USER_NAME}"-.
 
 Formulate Response: Present the retrieved information clearly and cite the source implicitly.
 
